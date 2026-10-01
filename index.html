@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Deception AR</title>
+    <!-- Libreria aframe -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <!-- Libreria MindAR -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <!-- Escena de aframe -->
+    <a-scene mindar-image="imageTargetSrc: ./assets_MindAR/targets-2.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+
+        <a-assets>
+        <!-- Aqui van los recursos -->
+      <a-asset-item id="modelo3d" src="./assets_MindAR/dark_deception_soul_shard_3d_model.glb"></a-asset-item>
+      <video
+      id="video1"
+      src="./assets_MindAR/dark_deception_video.mp4"
+      preload="auto"
+      loop="true"
+      muted="true"
+      crossorigin="anonymous"
+      playsinline
+      webkit-playsinline
+      ></video>
+      <video
+      id="video2"
+      src="./assets_MindAR/dark_deception_video2.mp4"
+      preload="auto"
+      loop="true"
+      muted="true"
+      crossorigin="anonymous"
+      playsinline
+      webkit-playsinline
+      ></video>
+        </a-assets>
+
+        <!-- Luces, para que el objeto 3d no se vea negro -->
+        <a-light type="ambient" intensity="1.5"></a-light>
+        <a-light type="directional" intensity="1.5" position="1 2 3"></a-light>
+
+        <a-camera position="0 0 0" look-controls="enabled:false">
+            <!-- camara de la escena -->
+        </a-camera>
+
+        <a-entity mindar-image-target="targetIndex: 0">
+            <!-- Aqui se colocan los elementos que salen en AR -->
+
+            <!-- Objeto 3d en el centro del poster -->
+            <a-gltf-model rotation="0 0 0" position="0 0 0.2" scale="0.1 0.1 0.1" src="#modelo3d"></a-gltf-model>
+
+            <!-- Video 1 (con audio) a la izquierda -->
+            <a-video
+            src="#video1"
+            position="-0.95 0 0.05"
+            width="0.8"
+            height="0.45">
+            </a-video>
+
+            <!-- Video 2 (sin audio) a la derecha -->
+            <a-video
+            src="#video2"
+            position="0.95 0 0.05"
+            width="0.8"
+            height="0.6">
+            </a-video>
+
+        </a-entity>
+       <script>
+        const video1 = document.querySelector('#video1');
+        const video2 = document.querySelector('#video2');
+
+        document.querySelector('[mindar-image-target]').addEventListener('targetFound' , () => {
+            video1.play();
+            video2.play();
+        })
+
+        // Al tocar la pantalla se activa el sonido del video 1
+        document.addEventListener('click', () => {
+            video1.muted = false;
+            video1.play();
+        })
+
+        document.querySelector('[mindar-image-target]').addEventListener('targetLost' , () => {
+            video1.pause();
+            video2.pause();
+        })
+       </script>
+    </a-scene>
+</body>
+</html>
